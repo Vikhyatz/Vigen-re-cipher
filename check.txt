@@ -1,0 +1,169 @@
+#include <string.h>
+#include <stdio.h>
+#include <ctype.h>
+
+void encryption(char content[], int key);
+void decryption(char content[], int key);
+int charMap(char letter);
+char intMap(int index, char charcase);
+
+
+int main(){
+
+
+   // read the file and get the content (file handling)
+   FILE* fptr = fopen("toBeEncrypted.txt", "r");
+   char text[1000];
+   fgets(text, 1000, fptr);
+   fclose(fptr);
+
+   // initializing the key
+   char key[] = "VIKHYAT";
+
+   char expnd_key[strlen(text)];
+
+   // if(strlen(text) > strlen(key)){
+       // expansion of the key for the variable text content
+       for (int i = 0; i < strlen(text)/strlen(key); i++){
+         //  printf("%s\n", expnd_key);
+          strcat(expnd_key, key);
+       }
+       // now adding the remaining characters from the key to complete the new expanded key
+       if (strlen(text) % strlen(key) != 0){
+          for(int i = 0; i < strlen(text) % strlen(key); i++){
+             strncat(expnd_key, &key[i], 1);
+          }
+       }
+   // }
+   
+   printf("%s", expnd_key);
+
+
+   
+   
+   //printf("%s/n", key);
+   //printf("expanded key: %s\n", expnd_key);
+
+   // int length = strlen(text); //same for the key as it is expanded
+
+   // for (int i = 0; i < length; i++){
+
+      // int textVal = charMap(text[i]);
+      // printf("text value %i", textVal);
+      // int keyVal = charMap(expnd_key[i]);
+      // printf("key value %i", keyVal);
+      
+      // int encryptedVal = textVal + keyVal;
+
+      // printf("encrypted val: %i\n", charMap(text[i]) + charMap(expnd_key[i]));
+   // }
+   // printf("%s", expnd_key);
+   
+
+   // printf("%i\n",charMap('z'));
+   // printf("%c\n",intMap(2,'L'));
+
+   // encryption(text, key);
+   // decryption(text, key);
+}
+
+// character mapping function return int
+int charMap(char letter){
+   if (islower(letter) != 0){
+      letter = letter - 97;
+   }
+   else if(isupper(letter) != 0){
+      letter = letter - 65;
+   }
+   return letter;
+}
+
+// the intMap function will take two arguments index and case
+// the index argument tells the number and the charcase value return 'U' or 'L' which represents uppercase or lowercase
+char intMap(int index, char charcase){
+   if (charcase == 'U'){
+      // uppercase
+      index = index + 65;
+   }
+   else if (charcase == 'L'){
+      // lowercase
+      index = index + 97;
+   }
+   return index;
+}
+
+void encryption(char content[],int key ){
+   // initializing a temporary string for changes
+   char temp[strlen(content)];
+   // copy the content array to the temp array
+   strcpy(temp, content);
+
+   // for loop to take each character and the encrypt them one by one
+   for (int i = 0; i < strlen(temp); i++){
+      char character = temp[i];
+      
+      if (isalpha(character) != 0){
+         int charValue = character + key;
+
+         if ( character > 96 & character < 123){
+            // if the character value exeeds the z (122) value.
+            if (charValue > 122){
+               charValue = charValue - 26;
+               temp[i] = charValue;
+            }
+            else{
+               temp[i] = charValue;
+            }
+         }
+         else if (character > 64 & character < 91){
+            if ( charValue > 90){
+               charValue = charValue - 26;
+               temp[i] = charValue;
+            }
+            else{
+               temp[i] = charValue;
+            }
+         }
+      }
+   }
+   // print the final encrypted cipher text
+   printf("%s\n", temp);
+}
+
+void decryption(char content[], int key){
+   // initializing a temporary string for changes
+   char temp[strlen(content)];
+   // copy the content array to the temp array
+   strcpy(temp, content);
+
+   // for loop to take each character and the decrypt them one by one
+   for (int i = 0; i < strlen(temp); i++){
+      char character = temp[i];
+      
+      if (isalpha(character) != 0){
+         int charValue = character - key;
+
+         if ( character > 96 & character < 123){
+            if (charValue < 97){
+               charValue = charValue + 26;
+               temp[i] = charValue;
+            }
+            else{
+               temp[i] = charValue;
+            }
+         }
+         else if (character > 64 & character < 91){
+            if ( charValue < 65){
+               charValue = charValue + 26;
+               temp[i] = charValue;
+            }
+            else{
+               temp[i] = charValue;
+            }
+         }
+      }
+   }
+   // print the final decrypted normal text
+   printf("%s\n", temp);
+}
+
